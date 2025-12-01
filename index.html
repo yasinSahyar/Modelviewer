@@ -8,7 +8,7 @@
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/1.13.0/model-viewer.min.js"></script>
 
     <style>
-        /* Sayfa ve Modelviewer Stilleri */
+        /* Page and Modelviewer Styles */
         body { margin: 0; padding: 0; }
 
         model-viewer {
@@ -17,7 +17,7 @@
             background-color: #f0f0f0; 
         }
 
-        /* Hotspot Butonunun Temel Stili */
+        /* Hotspot Button Base Style */
         .hotspot-button {
             display: block;
             width: 24px;
@@ -34,7 +34,7 @@
             transform: scale(1.2);
         }
 
-        /* Bilgi Kutusunun Stili */
+        /* Info Box Style */
         .hotspot-info {
             position: absolute;
             bottom: 30px;
@@ -46,10 +46,10 @@
             white-space: nowrap;
             font-family: Arial, sans-serif;
             font-size: 14px;
-            pointer-events: none; /* Bilgi kutusunun tıklamayı engellememesi için */
+            pointer-events: none;
         }
 
-        /* Varyant Kontrol Paneli Stili */
+        /* Variant Control Panel Style */
         #variant-controls {
             position: absolute;
             top: 15px;
@@ -83,7 +83,8 @@
 
     <model-viewer
         id="myModel"
-        src="model/world.glb"  alt="Oma Model Viewer Projekti"
+        src="model/world.glb" 
+        alt="My Model Viewer Project"
         
         ar
         ar-modes="webxr scene-viewer quick-look"
@@ -93,21 +94,18 @@
         shadow-intensity="1"
         exposure="1.2"
         environment-image="neutral"
-        
-        // Örnek modelin varsayılan varyantını seçmek için
-        variant-name="Robot" 
     >
         
         <div id="variant-controls">
-            <button data-variant="Robot">Väri 1 (Robot)</button>
-            <button data-variant="Astronaut">Väri 2 (Astronaut)</button>
+            <button data-variant="Robot">Color 1 (Robot)</button>
+            <button data-variant="Astronaut">Color 2 (Astronaut)</button>
         </div>
         
         <button slot="hotspot-head" 
                 class="hotspot-button"
                 data-position="0 0.8 0" 
                 data-normal="0 1 0">
-            <div class="hotspot-info">Pään Yksityiskohta</div>
+            <div class="hotspot-info">Head Detail</div>
         </button>
 
         <div slot="hotspot-side" 
@@ -115,7 +113,7 @@
              style="background-color: blue;"
              data-position="0.5 0.3 -0.2" 
              data-normal="1 0 0">
-            <div class="hotspot-info">Sivun Merkintä</div>
+            <div class="hotspot-info">Side Marking</div>
         </div>
 
         <button slot="hotspot-foot" 
@@ -123,7 +121,7 @@
                 style="background-color: green;"
                 data-position="-0.3 -0.5 0.3" 
                 data-normal="0 -1 0">
-            <div class="hotspot-info">Alustan Tiedot</div>
+            <div class="hotspot-info">Base Information</div>
         </button>
 
     </model-viewer>
@@ -132,32 +130,32 @@
         const modelViewer = document.getElementById('myModel');
         const variantControls = document.getElementById('variant-controls');
 
+        document.addEventListener('DOMContentLoaded', () => {
+            // Visually highlight the default variant (FOR VISUAL ONLY)
+            const defaultVariantButton = variantControls.querySelector(`button[data-variant="${modelViewer.getAttribute('variant-name')}"]`);
+            if(defaultVariantButton) {
+                defaultVariantButton.style.backgroundColor = '#28a745';
+            }
+
+            // Useful console output for finding variant names of your model:
+            modelViewer.addEventListener('load', () => {
+                 console.log('Available Variant Names:', modelViewer.availableVariants);
+            });
+        });
+        
         variantControls.addEventListener('click', (event) => {
             if (event.target.tagName === 'BUTTON') {
                 const variant = event.target.dataset.variant;
-                // Varyantı ayarla
+                // Set the variant
                 modelViewer.variantName = variant;
                 
-                // Hangi varyantın seçili olduğunu görsel olarak belirtmek isterseniz:
+                // Visually mark the selected button
                 variantControls.querySelectorAll('button').forEach(btn => {
                     btn.style.backgroundColor = '#007bff';
                 });
-                event.target.style.backgroundColor = '#28a745'; // Yeşil yaparak seçili olduğunu belirt
+                event.target.style.backgroundColor = '#28a745'; 
             }
         });
-        
-        // Sayfa yüklendiğinde varsayılan varyantı seçili gibi gösterme
-        document.addEventListener('DOMContentLoaded', () => {
-             const defaultVariantButton = variantControls.querySelector(`button[data-variant="${modelViewer.variantName}"]`);
-             if(defaultVariantButton) {
-                 defaultVariantButton.style.backgroundColor = '#28a745';
-             }
-        });
-        
-        // Eğer kendi modelinizde varyant isimlerini bilemiyorsanız, konsolu kontrol edebilirsiniz.
-        // modelViewer.addEventListener('load', () => {
-        //     console.log('Mevcut Varyant İsimleri:', modelViewer.availableVariants);
-        // });
         
     </script>
 
