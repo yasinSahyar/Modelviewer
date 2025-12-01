@@ -3,88 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Model Viewer </title>
+    <title>Model Viewer AR </title> 
     
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/1.13.0/model-viewer.min.js"></script>
+   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
 
     <style>
-        /* Page and Modelviewer Styles */
+        /* Standart CSS Stilleri */
         body { margin: 0; padding: 0; }
-
-        model-viewer {
-            width: 100vw;
-            height: 100vh;
-            background-color: #f0f0f0; 
-        }
-
-        /* Hotspot Button Base Style */
-        .hotspot-button {
-            display: block;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            border: 4px solid white;
-            background-color: red;
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            transition: transform 0.2s ease-in-out;
-        }
-
-        .hotspot-button:hover {
-            transform: scale(1.2);
-        }
-
-        /* Info Box Style */
-        .hotspot-info {
-            position: absolute;
-            bottom: 30px;
-            left: -50%;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 6px;
-            white-space: nowrap;
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            pointer-events: none;
-        }
-
-        /* Variant Control Panel Style */
-        #variant-controls {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            z-index: 10;
-            display: flex;
-            gap: 10px;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        #variant-controls button {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 5px;
-            background-color: #007bff;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        #variant-controls button:hover {
-            background-color: #0056b3;
-        }
-
+        model-viewer { width: 100vw; height: 100vh; background-color: #f0f0f0; }
+        .hotspot-button { display: block; width: 24px; height: 24px; border-radius: 50%; border: 4px solid white; background-color: red; cursor: pointer; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); transition: transform 0.2s ease-in-out; }
+        .hotspot-button:hover { transform: scale(1.2); }
+        .hotspot-info { position: absolute; bottom: 30px; left: -50%; background: rgba(0, 0, 0, 0.7); color: white; padding: 8px 12px; border-radius: 6px; white-space: nowrap; font-family: Arial, sans-serif; font-size: 14px; pointer-events: none; }
+        #variant-controls { position: absolute; top: 15px; left: 15px; z-index: 10; display: flex; gap: 10px; padding: 10px; background: rgba(255, 255, 255, 0.8); border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); }
+        #variant-controls button { padding: 8px 15px; border: none; border-radius: 5px; background-color: #007bff; color: white; cursor: pointer; transition: background-color 0.2s; }
+        #variant-controls button:hover { background-color: #0056b3; }
     </style>
 </head>
 <body>
 
     <model-viewer
         id="myModel"
-        src="model/world.glb" 
-        alt="My Model Viewer Project"
+        src="model/RobotExpressive.glb" 
+        alt="Robot Model for Testing"
         
         ar
         ar-modes="webxr scene-viewer quick-look"
@@ -103,7 +44,7 @@
         
         <button slot="hotspot-head" 
                 class="hotspot-button"
-                data-position="0 0.8 0" 
+                data-position="0 1.2 0.05"  
                 data-normal="0 1 0">
             <div class="hotspot-info">Head Detail</div>
         </button>
@@ -111,7 +52,7 @@
         <div slot="hotspot-side" 
              class="hotspot-button"
              style="background-color: blue;"
-             data-position="0.5 0.3 -0.2" 
+             data-position="0.5 0.5 -0.2" 
              data-normal="1 0 0">
             <div class="hotspot-info">Side Marking</div>
         </div>
@@ -119,7 +60,7 @@
         <button slot="hotspot-foot" 
                 class="hotspot-button"
                 style="background-color: green;"
-                data-position="-0.3 -0.5 0.3" 
+                data-position="-0.3 -0.75 0.3" 
                 data-normal="0 -1 0">
             <div class="hotspot-info">Base Information</div>
         </button>
@@ -131,13 +72,13 @@
         const variantControls = document.getElementById('variant-controls');
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Visually highlight the default variant (FOR VISUAL ONLY)
+            // Görsel olarak varsayılan varyantı işaretleme
             const defaultVariantButton = variantControls.querySelector(`button[data-variant="${modelViewer.getAttribute('variant-name')}"]`);
             if(defaultVariantButton) {
                 defaultVariantButton.style.backgroundColor = '#28a745';
             }
 
-            // Useful console output for finding variant names of your model:
+            // Model yüklendikten sonra konsolda varyant isimlerini gösterme (debug amaçlı)
             modelViewer.addEventListener('load', () => {
                  console.log('Available Variant Names:', modelViewer.availableVariants);
             });
@@ -146,10 +87,10 @@
         variantControls.addEventListener('click', (event) => {
             if (event.target.tagName === 'BUTTON') {
                 const variant = event.target.dataset.variant;
-                // Set the variant
+                // Varyantı ayarla
                 modelViewer.variantName = variant;
                 
-                // Visually mark the selected button
+                // Seçili butonu görsel olarak işaretle
                 variantControls.querySelectorAll('button').forEach(btn => {
                     btn.style.backgroundColor = '#007bff';
                 });
